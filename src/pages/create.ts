@@ -2,6 +2,11 @@ import {Micox, Portal, html} from "micox"
 import {IDestructedURL} from "micox/dist/router"
 import {router} from ".."
 import { asAST, Parser, ExportType } from "markdown-next"
+function flatten(arr: any) {
+  return arr.reduce(function (flat: any, toFlatten: any) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+  }, []);
+}
 const asBetterAST: ExportType<any> = {
     mapper: (tag, args) => children => ({
         tag,
@@ -63,7 +68,15 @@ const parseAST = (str: string) => {
                     }
                 }
             } else if (Array.isArray(x)) {
-                queue.push(dfs({content: x, visited: false}))
+                const flatten_x = (Array.isArray(x)) ? flatten(x) : x  
+                for (const y of flatten_x) {
+                    if (y.args === null) {
+                        console.log("here")
+                        queue.push(new Micox().contains(y.children).as(y.tag)) // br tag
+                        continue
+                    } 
+                    queue.push(dfs({content: y, visited: false}))
+                }
             } else if ("tag" in x) {
                 queue.push(new Micox().contains(dfs({content: x.children, visited: false})).as(x.tag))
             } 
