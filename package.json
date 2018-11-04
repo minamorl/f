@@ -19,10 +19,11 @@
     "typescript": "^3.2.0-dev.20181011",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9"
+    "webpack-dev-server": "^3.1.9",
+    "merge": ">=1.2.1"
   },
   "dependencies": {
-    "markdown-next": "0.0.3",
+    "markdown-next": "0.1.1",
     "micox": "0.4.1"
   }
 }
