@@ -31,61 +31,55 @@ const parseAST = (str: string) => {
         content: parser.parse(str),
         visited: false,
     }
-    console.log("==========")
     const dfs = (vertex: IVertex): any => {
         const queue: Array<Micox | string> = []
         vertex.visited = true
         if (!vertex.content) {
             return
-        }
-        
+        }        
         if (!Array.isArray(vertex.content)) {
             if (typeof vertex.content === "string") {
                 return vertex.content
             }
             if (Array.isArray(vertex.content.children)) {
                 for (const child of vertex.content.children) {
-                    queue.push(new Micox().contains(dfs({content: child, visited: false})).as(child.tag || vertex.content.tag))
+                    queue.push(new Micox().contains(dfs({content: child, visited: false})).as(child.tag || vertex.content.tag).attrs(vertex.content.args))
                 }
             } else if (vertex.content) {
-                queue.push(new Micox().contains(dfs({content: vertex.content.children, visited: false})).as(vertex.content.tag))
-            } 
+                queue.push(new Micox().contains(dfs({content: vertex.content.children, visited: false})).as(vertex.content.tag).attrs(vertex.content.args))
+            }
             return queue
         }
         for (const x of vertex.content) {
             if (typeof x === "string") {
                 queue.push(x)
             } else if (Array.isArray(x.children) && x.children.length) {
-                queue.push(new Micox().contains(dfs({content: x.children, visited: false})).as(x.tag))
+                queue.push(new Micox().contains(dfs({content: x.children, visited: false})).as(x.tag).attrs(x.args))
             } else if (Array.isArray(x.children)) {
                 for (const child of x.children) {
                     if (child.args === null && child.children === null) {
-                        console.log("here")
                         queue.push(new Micox().contains().as(child.tag)) // br tag
                     } else {
-                        console.log("here?")
-                        queue.push(new Micox().contains(dfs({content: child.children, visited: false})).as(child.tag))
+                        queue.push(new Micox().contains(dfs({content: child.children, visited: false})).as(child.tag).attrs(child.content.args))
                     }
                 }
             } else if (Array.isArray(x)) {
                 const flatten_x = (Array.isArray(x)) ? flatten(x) : x  
                 for (const y of flatten_x) {
-                    if (y.args === null) {
-                        console.log("here")
-                        queue.push(new Micox().contains(y.children).as(y.tag)) // br tag
+                    if (y.args === null ) {
+                        queue.push(new Micox().contains(dfs({content: y.children, visited: false})).as(y.tag))
                         continue
-                    } 
+                    }
                     queue.push(dfs({content: y, visited: false}))
                 }
             } else if ("tag" in x) {
-                queue.push(new Micox().contains(dfs({content: x.children, visited: false})).as(x.tag))
+                queue.push(new Micox().contains(dfs({content: x.children, visited: false})).as(x.tag).attrs(x.args))
             } 
         }
 
         return queue
     }
     const proceed = dfs(parsed)
-    console.log(proceed)
     return proceed
 }
 
