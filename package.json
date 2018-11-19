@@ -23,7 +23,7 @@
     "merge": ">=1.2.1"
   },
   "dependencies": {
-    "markdown-next": "0.1.1",
+    "markdown-next": "0.2.1",
     "micox": "0.4.1"
   }
 }

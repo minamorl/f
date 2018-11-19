@@ -34,6 +34,7 @@ const parseAST = (str: string) => {
     const dfs = (vertex: IVertex): any => {
         const queue: Array<Micox | string> = []
         vertex.visited = true
+        console.log(vertex)
         if (!vertex.content) {
             return
         }        
@@ -87,7 +88,7 @@ export const createPage = (props: IDestructedURL) => (portal: Portal) => {
     const preview = html.div().class("preview")
     return html.div([
         html.h1("Create new document"),
-        html.textarea("abc\ndef\nghj").attrs({ placeholder: "Insert here" }).events({
+        html.textarea("").attrs({ placeholder: "Insert here" }).events({
             keyup: ev => {
                 const parsed = parseAST(ev.target.value)
                 portal.transfer("preview", parsed)
